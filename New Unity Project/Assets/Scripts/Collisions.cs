@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Collisions : MonoBehaviour
 {
-    public int minProgress = 0;
+    public int value = 0;
     public int currentProgress;
     public GameObject nextTotem;
 
@@ -13,11 +13,14 @@ public class Collisions : MonoBehaviour
 
     public ParticleSystem soulsParticles;
 
+    private AudioSource aSource;
+
     void Start()
     {
-        currentProgress = minProgress;
-        progressBar.SetMinProgress(minProgress);
+        currentProgress = value;
+        progressBar.SetProgress(value);
         nextTotem.SetActive(false);
+        aSource = GetComponent<AudioSource>();
     }
 
     void OnCollisionEnter(Collision collisionInfo)
@@ -26,7 +29,9 @@ public class Collisions : MonoBehaviour
 
         if (collisionInfo.collider.tag == "Player")
         {
-            
+            currentProgress += 1;
+            progressBar.SetProgress(currentProgress);
+            aSource.Play();
             Destroy();
 
         }
@@ -34,8 +39,7 @@ public class Collisions : MonoBehaviour
 
     void Destroy()
     {
-        currentProgress += 1;
-        progressBar.SetProgress(currentProgress);
+        
         Instantiate(soulsParticles, transform.position, Quaternion.identity);
         Destroy(gameObject);
         nextTotem.SetActive(true);
